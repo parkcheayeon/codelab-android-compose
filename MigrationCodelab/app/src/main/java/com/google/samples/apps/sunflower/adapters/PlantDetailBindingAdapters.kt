@@ -46,7 +46,7 @@ fun bindIsGone(view: FloatingActionButton, isGone: Boolean?) {
     }
 }
 
-@BindingAdapter("renderHtml")
+@BindingAdapter("renderHtml") //
 fun bindRenderHtml(view: TextView, description: String?) {
     if (description != null) {
         view.text = HtmlCompat.fromHtml(description, FROM_HTML_MODE_COMPACT)
