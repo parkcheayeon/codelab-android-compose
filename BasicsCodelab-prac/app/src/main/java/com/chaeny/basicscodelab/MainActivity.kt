@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -130,7 +131,12 @@ private fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Composable
 private fun CardContent(name: String) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    Log.d("Greeting", "recomposition : $name")
+    var expanded = rememberSaveable {
+        Log.d("Greeting", "remember 호출 : $name")
+        false
+    }
+    Log.d("Greeting", "mutableStateOf 미사용 변수 : $expanded")
 
     Row(
         modifier = Modifier
