@@ -57,6 +57,9 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     // 여러 리컴포지션 간에 상태를 유지하려면 remember를 사용하여 변경 가능한 상태를 기억해야 합니다.
     // remember는 리컴포지션을 방지하는 데 사용되므로 상태가 재설정되지 않습니다.
     val expanded = remember { mutableStateOf(false) }
+
+    // 간단한 계산을 실행하므로 리컴포지션에 대비하여 이 값을 기억할 필요가 없습니다
+    val extraPadding = if (expanded.value) 48.dp else 0.dp
     Surface(
         color = MaterialTheme.colorScheme.primary,
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
@@ -65,7 +68,10 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             // alignEnd 수정자가 없으므로 시작 시 컴포저블에 약간의 weight을 제공합니다.
             // weight 수정자는 요소를 유연하게 만들기 위해 가중치가 없는 다른 요소를
             // 효과적으로 밀어내어 요소의 사용 가능한 모든 공간을 채웁니다.
-            Column(modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding(bottom = extraPadding)
+            ) {
                 Text(text = "Hello ")
                 Text(text = name)
             }
