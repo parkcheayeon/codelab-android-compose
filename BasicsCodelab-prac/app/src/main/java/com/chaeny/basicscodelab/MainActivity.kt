@@ -53,7 +53,10 @@ fun MyApp(modifier: Modifier = Modifier) {
 
     Surface(modifier) {
         if (shouldShowOnboarding) {
-            OnboardingScreen(onContinueClicked = { shouldShowOnboarding = false })
+            OnboardingScreen(onContinueClicked = { number ->
+                Log.d("MyApp", "onContinueClicked 호출, number = $number")
+                shouldShowOnboarding = false
+            })
         } else {
             Greetings()
         }
@@ -64,7 +67,7 @@ fun MyApp(modifier: Modifier = Modifier) {
 fun OnboardingScreen(
     // OnboardingScreen() 안에는 상태가 없다 버튼이 눌리면 onContinueClicked() 호출만 한다.
     // shouldShowOnboarding는 MyApp에만 있다.
-    onContinueClicked: () -> Unit,
+    onContinueClicked: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -75,7 +78,7 @@ fun OnboardingScreen(
         Text("Welcome to the Basics Codelab!")
         Button(
             modifier = Modifier.padding(vertical = 24.dp),
-            onClick = onContinueClicked
+            onClick = { onContinueClicked(10) }
         ) {
             Text("Continue")
         }
