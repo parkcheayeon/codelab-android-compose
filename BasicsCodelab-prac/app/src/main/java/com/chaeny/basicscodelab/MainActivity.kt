@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +48,9 @@ class MainActivity : ComponentActivity() {
 // 이렇게 하면 호출 사이트가 구성 가능한 함수 외부에서 레이아웃 안내와 동작을 조정할 수 있습니다
 @Composable
 fun MyApp(modifier: Modifier = Modifier) {
-    var shouldShowOnboarding by remember { mutableStateOf(true) }
+    // rememberSaveable- 구성 변경(예: 회전)과 프로세스 중단에도 각 상태를 저장합니다.
+    // 다크모드로 변경해도 온보딩 화면이 표시되지 않음
+    var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
     // 매번 .value를 입력할 필요가 없도록 해주는 속성 위임
     // OnboardingScreen에서 만든 상태를 MyApp 컴포저블과 공유해야 합니다.
     // 상태 값을 상위 요소와 공유하는 대신 상태를 호이스팅합니다.
@@ -118,13 +121,14 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     // 여러 리컴포지션 간에 상태를 유지하려면 remember를 사용하여 변경 가능한 상태를 기억해야 합니다.
     // remember는 리컴포지션을 방지하는 데 사용되므로 상태가 재설정되지 않습니다.
     Log.d("Greeting", "recomposition : $name")
-    var expanded by remember {
-        Log.d("Greeting", "remember 호출 : $name")
+    // rememberSaveable - 다크모드로 변경해도 expanded 값이 유지됨
+    var expanded by rememberSaveable {
+        Log.d("Greeting", "rememberSaveable 호출 : $name")
         mutableStateOf(false)
     }
-    val expanded2 = mutableStateOf(false)
-    Log.d("Greeting", "remember 사용 변수 : $expanded")
-    Log.d("Greeting", "remember 미사용 변수 : $expanded2")
+    var expanded2 by remember { mutableStateOf(false) }
+    Log.d("Greeting", "rememberSaveable 사용 변수 : $expanded")
+    Log.d("Greeting", "remember 사용 변수 : $expanded2")
 
     // 간단한 계산을 실행하므로 리컴포지션에 대비하여 이 값을 기억할 필요가 없습니다
     val extraPadding = if (expanded) 48.dp else 0.dp
@@ -147,7 +151,10 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             // 값을 사용하지 않고 함수를 사용합니다.
             // First-class citizen - 함수도 숫자나 문자처럼 자유롭게 변수에 저장하거나 넘길 수 있다
             ElevatedButton(
-                onClick = { expanded = !expanded }
+                onClick = {
+                    expanded = !expanded
+                    expanded2 = !expanded2
+                }
             ) {
                 Text(if (expanded) "Show less" else "Show more")
             }
