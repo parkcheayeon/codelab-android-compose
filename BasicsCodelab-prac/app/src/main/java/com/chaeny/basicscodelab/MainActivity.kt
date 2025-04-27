@@ -4,17 +4,22 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,7 +44,46 @@ class MainActivity : ComponentActivity() {
 // 함수는 기본적으로 빈 수정자가 할당되는 modifier를 포함하는 것이 좋습니다.
 // 이렇게 하면 호출 사이트가 구성 가능한 함수 외부에서 레이아웃 안내와 동작을 조정할 수 있습니다
 @Composable
-fun MyApp(
+fun MyApp(modifier: Modifier = Modifier) {
+    var shouldShowOnboarding by remember { mutableStateOf(true) }
+    // 매번 .value를 입력할 필요가 없도록 해주는 속성 위임
+    // OnboardingScreen에서 만든 상태를 MyApp 컴포저블과 공유해야 합니다.
+    // 상태 값을 상위 요소와 공유하는 대신 상태를 호이스팅합니다.
+    // 즉, 상태 값에 액세스해야 하는 공통 상위 요소로 상태 값을 이동하기만 하면 됩니다.
+
+    Surface(modifier) {
+        if (shouldShowOnboarding) {
+            OnboardingScreen(onContinueClicked = { shouldShowOnboarding = false })
+        } else {
+            Greetings()
+        }
+    }
+}
+
+@Composable
+fun OnboardingScreen(
+    // OnboardingScreen() 안에는 상태가 없다 버튼이 눌리면 onContinueClicked() 호출만 한다.
+    // shouldShowOnboarding는 MyApp에만 있다.
+    onContinueClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Welcome to the Basics Codelab!")
+        Button(
+            modifier = Modifier.padding(vertical = 24.dp),
+            onClick = onContinueClicked
+        ) {
+            Text("Continue")
+        }
+    }
+}
+
+@Composable
+private fun Greetings(
     modifier: Modifier = Modifier,
     names: List<String> = listOf("World", "Compose")
 ) {
@@ -47,6 +91,14 @@ fun MyApp(
         for (name in names) {
             Greeting(name = name)
         }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 320, heightDp = 320)
+@Composable
+fun OnboardingPreview() {
+    BasicsCodelabTheme {
+        OnboardingScreen(onContinueClicked = {}) // Do nothing on click.
     }
 }
 
@@ -58,7 +110,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     // 여러 리컴포지션 간에 상태를 유지하려면 remember를 사용하여 변경 가능한 상태를 기억해야 합니다.
     // remember는 리컴포지션을 방지하는 데 사용되므로 상태가 재설정되지 않습니다.
     Log.d("Greeting", "recomposition : $name")
-    val expanded = remember {
+    var expanded by remember {
         Log.d("Greeting", "remember 호출 : $name")
         mutableStateOf(false)
     }
@@ -67,7 +119,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     Log.d("Greeting", "remember 미사용 변수 : $expanded2")
 
     // 간단한 계산을 실행하므로 리컴포지션에 대비하여 이 값을 기억할 필요가 없습니다
-    val extraPadding = if (expanded.value) 48.dp else 0.dp
+    val extraPadding = if (expanded) 48.dp else 0.dp
     Surface(
         color = MaterialTheme.colorScheme.primary,
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
@@ -87,9 +139,9 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             // 값을 사용하지 않고 함수를 사용합니다.
             // First-class citizen - 함수도 숫자나 문자처럼 자유롭게 변수에 저장하거나 넘길 수 있다
             ElevatedButton(
-                onClick = { expanded.value = !expanded.value }
+                onClick = { expanded = !expanded }
             ) {
-                Text(if (expanded.value) "Show less" else "Show more")
+                Text(if (expanded) "Show less" else "Show more")
             }
         }
     }
@@ -97,8 +149,16 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true, widthDp = 320)
 @Composable
-fun GreetingPreview() {
+fun GreetingsPreview() {
     BasicsCodelabTheme {
-        MyApp()
+        Greetings()
+    }
+}
+
+@Preview
+@Composable
+fun MyAppPreview() {
+    BasicsCodelabTheme {
+        MyApp(Modifier.fillMaxSize())
     }
 }
