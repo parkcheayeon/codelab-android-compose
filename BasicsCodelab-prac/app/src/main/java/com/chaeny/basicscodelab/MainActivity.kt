@@ -1,5 +1,6 @@
 package com.chaeny.basicscodelab
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -27,6 +28,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chaeny.basicscodelab.ui.theme.BasicsCodelabTheme
@@ -157,7 +159,12 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 // 패딩이 음수가 되지 않도록 해야 합니다. 패딩이 음수가 되면 앱이 다운될 수 있습니다.
             ) {
                 Text(text = "Hello ")
-                Text(text = name)
+                Text(text = name,
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                )
+                // copy 함수를 사용하여 미리 정의된 스타일을 수정할 수 있습니다
             }
             // 상태를 변경하기 위해 Button이 onClick이라는 매개변수를 사용한다고 알고 있을 수도 있지만,
             // 값을 사용하지 않고 함수를 사용합니다.
@@ -187,5 +194,19 @@ fun GreetingsPreview() {
 fun MyAppPreview() {
     BasicsCodelabTheme {
         MyApp(Modifier.fillMaxSize())
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "GreetingPreviewDark"
+)
+@Preview(showBackground = true, widthDp = 320)
+@Composable
+fun GreetingPreview() {
+    BasicsCodelabTheme {
+        Greetings()
     }
 }
