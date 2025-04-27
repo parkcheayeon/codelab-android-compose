@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
@@ -15,19 +15,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material.icons.Icons.Filled
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -110,74 +116,75 @@ private fun Greetings(
     }
 }
 
+@Composable
+private fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
+        modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+        CardContent(name)
+    }
+}
+
+@Composable
+private fun CardContent(name: String) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier
+            .padding(12.dp)
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+        // extraPadding을 삭제하고 대신 animateContentSize 수정자를 Row에 적용합니다.
+        // 그러면 애니메이션 생성 프로세스가 자동화되고 이를 수동으로 실행하기가 어려워집니다.
+        // 또한 coerceAtLeast가 더 이상 필요하지 않습니다.
+        // animateDpAsState - 특정 값(ex. padding) 하나를 바꾸는 것
+        // animateContentSize - Row 전체 크기를 바꾸는 것
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(12.dp)
+        ) {
+            Text(text = "Hello, ")
+            Text(
+                text = name, style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.ExtraBold
+                )
+            )
+            if (expanded) {
+                Text(
+                    text = ("Composem ipsum color sit lazy, " +
+                            "padding theme elit, sed do bouncy. ").repeat(4),
+                )
+            }
+        }
+        IconButton(onClick = { expanded = !expanded }) {
+            Icon(
+                imageVector = if (expanded) Filled.ExpandLess else Filled.ExpandMore,
+                // 아이콘 지정
+                contentDescription = if (expanded) {
+                    stringResource(R.string.show_less)
+                } else {
+                    stringResource(R.string.show_more)
+                }
+                //'더보기' 및 '간략히 보기'를 위한 콘텐츠 설명이 있어야 하며 간단한 if 문을 사용하여 설명을 추가할 수 있습니다
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
 fun OnboardingPreview() {
     BasicsCodelabTheme {
         OnboardingScreen(onContinueClicked = {}) // Do nothing on click.
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    // State 및 MutableState는 어떤 값을 보유하고 그 값이 변경될 때마다 UI 업데이트(리컴포지션)를 트리거하는 인터페이스입니다.
-    // 하지만, 컴포저블 내의 변수에 mutableStateOf를 할당하기만 할 수는 없습니다.
-    // 앞에서 설명한 것처럼 false 값을 가진 변경 가능한 새 상태로 상태를 재설정하여 컴포저블을 다시 호출하는 때는 언제든지 리컴포지션이 일어날 수 있습니다.
-    // 여러 리컴포지션 간에 상태를 유지하려면 remember를 사용하여 변경 가능한 상태를 기억해야 합니다.
-    // remember는 리컴포지션을 방지하는 데 사용되므로 상태가 재설정되지 않습니다.
-    Log.d("Greeting", "recomposition : $name")
-    // rememberSaveable - 다크모드로 변경해도 expanded 값이 유지됨
-    var expanded by rememberSaveable {
-        Log.d("Greeting", "rememberSaveable 호출 : $name")
-        mutableStateOf(false)
-    }
-    var expanded2 by remember { mutableStateOf(false) }
-    Log.d("Greeting", "rememberSaveable 사용 변수 : $expanded")
-    Log.d("Greeting", "remember 사용 변수 : $expanded2")
-
-    // 간단한 계산을 실행하므로 리컴포지션에 대비하여 이 값을 기억할 필요가 없습니다
-    val extraPadding by animateDpAsState(
-        if (expanded) 48.dp else 0.dp,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        )
-    )
-    //Log.d("Greeting", "extraPadding 값 : $extraPadding")
-
-    Surface(
-        color = MaterialTheme.colorScheme.primary,
-        modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
-    ) {
-        Row(modifier = Modifier.padding(24.dp)) {
-            // alignEnd 수정자가 없으므로 시작 시 컴포저블에 약간의 weight을 제공합니다.
-            // weight 수정자는 요소를 유연하게 만들기 위해 가중치가 없는 다른 요소를
-            // 효과적으로 밀어내어 요소의 사용 가능한 모든 공간을 채웁니다.
-            Column(modifier = Modifier
-                .weight(1f)
-                .padding(bottom = extraPadding.coerceAtLeast(0.dp))
-                // 패딩이 음수가 되지 않도록 해야 합니다. 패딩이 음수가 되면 앱이 다운될 수 있습니다.
-            ) {
-                Text(text = "Hello ")
-                Text(text = name,
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.ExtraBold
-                    )
-                )
-                // copy 함수를 사용하여 미리 정의된 스타일을 수정할 수 있습니다
-            }
-            // 상태를 변경하기 위해 Button이 onClick이라는 매개변수를 사용한다고 알고 있을 수도 있지만,
-            // 값을 사용하지 않고 함수를 사용합니다.
-            // First-class citizen - 함수도 숫자나 문자처럼 자유롭게 변수에 저장하거나 넘길 수 있다
-            ElevatedButton(
-                onClick = {
-                    expanded = !expanded
-                    expanded2 = !expanded2
-                }
-            ) {
-                Text(if (expanded) "Show less" else "Show more")
-            }
-        }
     }
 }
 
