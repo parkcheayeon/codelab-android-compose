@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -131,7 +134,15 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     Log.d("Greeting", "remember 사용 변수 : $expanded2")
 
     // 간단한 계산을 실행하므로 리컴포지션에 대비하여 이 값을 기억할 필요가 없습니다
-    val extraPadding = if (expanded) 48.dp else 0.dp
+    val extraPadding by animateDpAsState(
+        if (expanded) 48.dp else 0.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+    //Log.d("Greeting", "extraPadding 값 : $extraPadding")
+
     Surface(
         color = MaterialTheme.colorScheme.primary,
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
@@ -142,7 +153,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             // 효과적으로 밀어내어 요소의 사용 가능한 모든 공간을 채웁니다.
             Column(modifier = Modifier
                 .weight(1f)
-                .padding(bottom = extraPadding)
+                .padding(bottom = extraPadding.coerceAtLeast(0.dp))
+                // 패딩이 음수가 되지 않도록 해야 합니다. 패딩이 음수가 되면 앱이 다운될 수 있습니다.
             ) {
                 Text(text = "Hello ")
                 Text(text = name)
