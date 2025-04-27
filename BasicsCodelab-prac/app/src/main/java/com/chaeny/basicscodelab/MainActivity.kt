@@ -1,6 +1,7 @@
 package com.chaeny.basicscodelab
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -56,7 +57,14 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     // 앞에서 설명한 것처럼 false 값을 가진 변경 가능한 새 상태로 상태를 재설정하여 컴포저블을 다시 호출하는 때는 언제든지 리컴포지션이 일어날 수 있습니다.
     // 여러 리컴포지션 간에 상태를 유지하려면 remember를 사용하여 변경 가능한 상태를 기억해야 합니다.
     // remember는 리컴포지션을 방지하는 데 사용되므로 상태가 재설정되지 않습니다.
-    val expanded = remember { mutableStateOf(false) }
+    Log.d("Greeting", "recomposition : $name")
+    val expanded = remember {
+        Log.d("Greeting", "remember 호출 : $name")
+        mutableStateOf(false)
+    }
+    val expanded2 = mutableStateOf(false)
+    Log.d("Greeting", "remember 사용 변수 : $expanded")
+    Log.d("Greeting", "remember 미사용 변수 : $expanded2")
 
     // 간단한 계산을 실행하므로 리컴포지션에 대비하여 이 값을 기억할 필요가 없습니다
     val extraPadding = if (expanded.value) 48.dp else 0.dp
