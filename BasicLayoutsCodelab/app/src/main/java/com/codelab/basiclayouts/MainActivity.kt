@@ -21,9 +21,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codelab.basiclayouts.ui.theme.MySootheTheme
@@ -40,7 +50,28 @@ class MainActivity : ComponentActivity() {
 fun SearchBar(
     modifier: Modifier = Modifier
 ) {
-    // Implement composable here
+    TextField(
+        value = "",
+        onValueChange = {}, // 상태와 관련된 모든 내용은 무시
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null
+                // placeholder가 이미 텍스트 필드의 의미를 설명하므로 필요하지 않음
+            )
+        },
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = MaterialTheme.colorScheme.surface
+            // 배경색을 포커스 여부와 상관없이 동일하게 지정
+        ),
+        placeholder = {
+            Text(stringResource(R.string.placeholder_search))
+        },
+        modifier = modifier
+            .fillMaxWidth() // SearchBar가 상위 요소의 전체 가로 공간을 차지
+            .heightIn(min = 56.dp) // 최소 높이
+    )
 }
 
 // Step: Align your body - Alignment
