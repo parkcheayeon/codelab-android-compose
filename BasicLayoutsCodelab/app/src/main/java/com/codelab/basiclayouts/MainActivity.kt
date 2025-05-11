@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -85,6 +86,10 @@ fun SearchBar(
 // Step: Align your body - Alignment
 @Composable
 fun AlignYourBodyElement(
+    @DrawableRes drawable: Int,
+    @StringRes text: Int,
+    // 이미지와 텍스트 동적으로 만들기
+    // 리소스 ID임을 컴파일 타임에 보장
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -92,14 +97,19 @@ fun AlignYourBodyElement(
         modifier = modifier
     ) {
         Image(
-            painter = painterResource(R.drawable.ab1_inversions),
+            painter = painterResource(drawable),
             contentDescription = null,
             contentScale = ContentScale.Crop, // 이미지가 꽉 차게 자르기
             modifier = Modifier
                 .size(88.dp)
                 .clip(CircleShape) // 컴포저블의 모양 조정 (원형)
         )
-        Text(text = stringResource(R.string.ab1_inversions))
+        Text(
+            text = stringResource(text),
+            modifier = Modifier.paddingFromBaseline(top = 24.dp, bottom = 8.dp),
+            // 텍스트 요소의 기준선 간격 업데이트
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }
 
@@ -205,6 +215,8 @@ fun SearchBarPreview() {
 fun AlignYourBodyElementPreview() {
     MySootheTheme {
         AlignYourBodyElement(
+            text = R.string.ab1_inversions,
+            drawable = R.drawable.ab1_inversions,
             modifier = Modifier.padding(8.dp)
         )
     }
