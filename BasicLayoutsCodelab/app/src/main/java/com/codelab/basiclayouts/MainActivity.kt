@@ -23,11 +23,13 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -45,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.Surface
 import com.codelab.basiclayouts.ui.theme.MySootheTheme
 
 class MainActivity : ComponentActivity() {
@@ -118,7 +121,23 @@ fun AlignYourBodyElement(
 fun FavoriteCollectionCard(
     modifier: Modifier = Modifier
 ) {
-    // Implement composable here
+    Surface(
+        shape = MaterialTheme.shapes.medium, // 모서리 둥글게
+        modifier = modifier
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically, // 세로 방향 중앙 정렬
+            modifier = Modifier.width(255.dp) // 카드 가로 너비
+        ) {
+            Image(
+                painter = painterResource(R.drawable.fc2_nature_meditations),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(80.dp)
+            )
+            Text(text = stringResource(R.string.fc2_nature_meditations))
+        }
+    }
 }
 
 // Step: Align your body row - Arrangements
