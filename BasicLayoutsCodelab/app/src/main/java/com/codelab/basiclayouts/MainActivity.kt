@@ -59,6 +59,8 @@ import androidx.compose.material3.Surface
 import com.codelab.basiclayouts.ui.theme.MySootheTheme
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material3.NavigationBar
@@ -229,7 +231,10 @@ fun HomeSection(
 // Step: Home screen - Scrolling
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
-    Column(modifier) {
+    Column(
+        modifier.verticalScroll(rememberScrollState())
+        // 스크롤 상태 기억
+    ) {
         Spacer(Modifier.height(16.dp))
         SearchBar(Modifier.padding(horizontal = 16.dp))
         HomeSection(title = R.string.align_your_body) {
@@ -287,7 +292,7 @@ private fun SootheBottomNavigation(modifier: Modifier = Modifier) {
 fun MySootheAppPortrait() {
     MySootheTheme {
         Scaffold(
-            bottomBar = { SootheBottomNavigation() }) { padding ->
+            bottomBar = { SootheBottomNavigation() }) { padding -> // PaddingValues
             HomeScreen(Modifier.padding(padding))
         }
     }
@@ -439,7 +444,7 @@ fun HomeSectionPreview() {
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
+@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE, heightDp = 180)
 @Composable
 fun ScreenContentPreview() {
     MySootheTheme { HomeScreen() }
