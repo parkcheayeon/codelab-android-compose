@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -16,10 +17,12 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun WaterCounter(modifier: Modifier = Modifier) {
     Column(modifier = modifier.padding(16.dp)) {
-        val count: MutableState<Int> = mutableStateOf(0)
+        val count: MutableState<Int> = remember { mutableStateOf(0) }
         // 리컴포지션 예약은 잘 작동합니다. 그러나 리컴포지션이 발생하면 count 변수가 다시 0으로 초기화되므로
         // 리컴포지션 간에 이 값을 유지할 방법이 필요합니다.
-        Text(text = "You've had $count glasses.")
+        // remember로 계산된 값은 초기 컴포지션 중에 컴포지션에 저장되고 저장된 값은 리컴포지션 간에 유지됩니다.
+        // private val과 같은 방식이라고 생각하면 된다.
+        Text("You've had ${count.value} glasses.")
         Button(onClick = { count.value++ }, Modifier.padding(top = 8.dp)) {
             Text("Add one")
         }
