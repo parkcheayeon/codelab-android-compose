@@ -5,25 +5,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-// Compose는 상태 value 속성을 읽는 각 컴포저블을 추적하고 그 value가 변경되면 리컴포지션을 트리거합니다.
-// mutableStateOf 함수를 사용하여 관찰 가능한 MutableState를 만들 수 있습니다.
-// 이 함수는 초깃값을 State 객체에 래핑된 매개변수로 수신한 다음, value의 값을 관찰 가능한 상태로 만듭니다.
 @Composable
 fun WaterCounter(modifier: Modifier = Modifier) {
     Column(modifier = modifier.padding(16.dp)) {
-        val count: MutableState<Int> = remember { mutableStateOf(0) }
-        // 리컴포지션 예약은 잘 작동합니다. 그러나 리컴포지션이 발생하면 count 변수가 다시 0으로 초기화되므로
-        // 리컴포지션 간에 이 값을 유지할 방법이 필요합니다.
-        // remember로 계산된 값은 초기 컴포지션 중에 컴포지션에 저장되고 저장된 값은 리컴포지션 간에 유지됩니다.
-        // private val과 같은 방식이라고 생각하면 된다.
-        Text("You've had ${count.value} glasses.")
-        Button(onClick = { count.value++ }, Modifier.padding(top = 8.dp)) {
+        var count by remember { mutableStateOf(0) }
+        // by 키워드를 사용하여 count를 var로 정의할 수 있습니다. 위임의 getter 및 setter 가져오기를 추가하면
+        // 매번 MutableState의 value 속성을 명시적으로 참조하지 않고도 count를 간접적으로 읽고 변경할 수 있습니다.
+        Text("You've had $count glasses.")
+        Button(onClick = { count++ }, Modifier.padding(top = 8.dp)) {
             Text("Add one")
         }
     }
