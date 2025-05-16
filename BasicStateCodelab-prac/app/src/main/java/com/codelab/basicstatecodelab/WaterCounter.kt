@@ -15,9 +15,6 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun WaterCounter(modifier: Modifier = Modifier) {
     Column(modifier = modifier.padding(16.dp)) {
-        // Activity가 다시 생성된 후 UI 상태를 복원하려면 rememberSaveable을 사용합니다.
-        // 리컴포지션 간에 상태를 유지하는 것 외에도 rememberSaveable은 Activity 재생성 및 시스템에서 시작된
-        // 프로세스 종료 전반에 걸쳐 상태를 유지합니다.
         var count by rememberSaveable { mutableStateOf(0) }
         if (count > 0) {
             Text("You've had $count glasses.")
@@ -26,4 +23,26 @@ fun WaterCounter(modifier: Modifier = Modifier) {
             Text("Add one")
         }
     }
+}
+
+// Stateless 컴포저블은 상태를 소유하지 않는 컴포저블입니다. 즉, 새 상태를 보유하거나 정의하거나 수정하지 않습니다.
+// count를 표시하고 count를 늘릴 때 함수를 호출
+@Composable
+fun StatelessCounter(count: Int, onIncrement: () -> Unit, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.padding(16.dp)) {
+        if (count > 0) {
+            Text("You've had $count glasses.")
+        }
+        Button(onClick = onIncrement, Modifier.padding(top = 8.dp), enabled = count < 10) {
+            Text("Add one")
+        }
+    }
+}
+
+// Stateful 컴포저블은 시간이 지남에 따라 변할 수 있는 상태를 소유하는 컴포저블입니다.
+// count 상태를 보유하고 StatelessCounter 함수를 호출할 때 이 상태를 수정
+@Composable
+fun StatefulCounter(modifier: Modifier = Modifier) {
+    var count by rememberSaveable { mutableStateOf(0) }
+    StatelessCounter(count, { count++ }, modifier)
 }
