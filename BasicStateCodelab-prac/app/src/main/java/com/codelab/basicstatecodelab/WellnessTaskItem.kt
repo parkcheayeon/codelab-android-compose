@@ -9,10 +9,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -44,25 +40,4 @@ fun WellnessTaskItem(
         }
     }
 }
-
-// Stateful
-@Composable
-fun WellnessTaskItem(
-    taskName: String,
-    onClose: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var checkedState by rememberSaveable { mutableStateOf(false) }
-
-    WellnessTaskItem(
-        taskName = taskName,
-        checked = checkedState,
-        onCheckedChange = { newValue -> checkedState = newValue },
-        onClose = onClose,
-        modifier = modifier,
-    )
-}
-
-// IconButton(onClick = onClose)
-// -> WellnessTaskItem onClose = { onCloseTask(task) }
-// -> WellnessTasksList onCloseTask = { task -> list.remove(task) }
+// CheckBox 상태가 목록 수준으로 끌어올려지므로 더 이상 스테이트풀(Stateful) 메서드가 필요하지 않습니다.
