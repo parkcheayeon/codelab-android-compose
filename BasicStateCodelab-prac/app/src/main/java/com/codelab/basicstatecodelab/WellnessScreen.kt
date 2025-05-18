@@ -2,23 +2,25 @@ package com.codelab.basicstatecodelab
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.toMutableStateList
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Modifier
 
 @Composable
-fun WellnessScreen(modifier: Modifier = Modifier) {
+fun WellnessScreen(
+    modifier: Modifier = Modifier,
+    wellnessViewModel: WellnessViewModel = viewModel()
+    // ViewModel은 탐색 그래프의 활동이나 프래그먼트, 대상에서
+    // 호출되는 루트 컴포저블에 가까운 화면 수준 컴포저블에서 사용하는 것이 좋습니다.
+    // ViewModel은 다른 컴포저블로 전달하면 안 됩니다.
+    // 대신 필요한 데이터와 필수 로직을 실행하는 함수만 매개변수로 전달해야 합니다.
+) {
     Column(modifier = modifier) {
         StatefulCounter()
 
-        // 긴 직렬화 또는 역직렬화가 필요한 복잡한 데이터 구조나 대량의 데이터를 저장하는 데 rememberSaveable을 사용해서는 안 됩니다.
-        val list = remember { getWellnessTasks().toMutableStateList() }
-        // 목록 생성
-        // 확장 함수 toMutableStateList()를 사용하면 변경 가능하거나 변경 불가능한
-        // 초기 Collection(예: List)에서 관찰 가능한 MutableList를 만들 수 있습니다.
-        // mutableStateListOf를 사용하여 관찰 가능한 MutableList를 만들고 초기 상태의 요소를 추가할 수도 있습니다.
-        WellnessTasksList(list = list, onCloseTask = { task -> list.remove(task) })
+        WellnessTasksList(
+            list = wellnessViewModel.tasks,
+            onCloseTask = { task -> wellnessViewModel.remove(task) }
+        )
+        // 상태는 컴포지션 외부에 유지되고 ViewModel에 의해 저장되므로 목록의 변형은 구성이 변경되어도 유지
     }
 }
-
-private fun getWellnessTasks() = List(30) { i -> WellnessTask(i, "Task # $i") }
