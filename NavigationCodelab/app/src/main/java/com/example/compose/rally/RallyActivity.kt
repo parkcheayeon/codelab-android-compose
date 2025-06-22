@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -87,7 +88,17 @@ fun RallyApp() {
     }
 }
 
-fun NavHostController.navigateSingleTopTo(route: String) =
-    this.navigate(route) { launchSingleTop = true }
-// 백 스택 위에 대상 탭이 최대 1개만 있도록
-// 동일한 탭을 여러 번 탭해도 동일한 대상의 사본이 여러 개 실행되지 않는다.
+fun NavHostController.navigateSingleTopTo(route: String) = this.navigate(route) {
+    popUpTo(
+        this@navigateSingleTopTo.graph.findStartDestination().id
+    ) {
+        saveState = true
+    }
+    // 새로 탭을 눌렀을 때 이전 화면 스택들을 정리하고, 탭의 첫 화면만 남기는데 상태는 저장한다.
+    launchSingleTop = true
+    // 백 스택 위에 대상 탭이 최대 1개만 있도록
+    // 동일한 탭을 여러 번 탭해도 동일한 대상의 사본이 여러 개 실행되지 않는다.
+    // 새로운 인스턴스를 생성하지 않고 기존 것을 재활용한다.
+    restoreState = true
+    // 이전에 PopUpToBuilder.saveState 또는 popUpToSaveState 속성에 의한 저장된 상태 복원 여부 결정
+}
