@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -56,7 +57,10 @@ fun RallyApp() {
             topBar = {
                 RallyTabRow(
                     allScreens = rallyTabRowScreens,
-                    onTabSelected = { screen -> currentScreen = screen },
+                    onTabSelected = { newScreen ->
+                        navController.navigateSingleTopTo(newScreen.route)
+                    },
+                    // 탭을 탭하면 특정 대상으로 이동하기를 원하므로 어느 탭 아이콘이 선택되었는지 알려준다
                     currentScreen = currentScreen
                 )
             }
@@ -82,3 +86,8 @@ fun RallyApp() {
         }
     }
 }
+
+fun NavHostController.navigateSingleTopTo(route: String) =
+    this.navigate(route) { launchSingleTop = true }
+// 백 스택 위에 대상 탭이 최대 1개만 있도록
+// 동일한 탭을 여러 번 탭해도 동일한 대상의 사본이 여러 개 실행되지 않는다.
