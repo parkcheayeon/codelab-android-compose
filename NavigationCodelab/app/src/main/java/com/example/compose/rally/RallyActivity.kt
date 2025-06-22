@@ -23,14 +23,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.rally.ui.components.RallyTabRow
 import com.example.compose.rally.ui.theme.RallyTheme
@@ -51,9 +49,19 @@ class RallyActivity : ComponentActivity() {
 @Composable
 fun RallyApp() {
     RallyTheme {
-        var currentScreen: RallyDestination by remember { mutableStateOf(Overview) }
         val navController = rememberNavController()
         // NavController 가져오기
+
+        val currentBackStack by navController.currentBackStackEntryAsState()
+        // 백 스택에서 현재 대상의 실시간 업데이트를 State의 형식으로 받아볼 수 있다.
+        val currentDestination = currentBackStack?.destination
+        // currentBackStack?.destination은 NavDestination.을 반환한다.
+        // currentScreen을 다시 올바르게 업데이트하려면 반환된 NavDestination을 Rally의 3가지 기본 화면 컴포저블에 매칭할 방법이 있어야 한다.
+        // 현재 어느 컴포저블이 표시되어 있는지 확인하여 이 정보를 RallyTabRow.에 전달해야 한다.
+        val currentScreen = rallyTabRowScreens.find { it.route == currentDestination?.route } ?: Accounts
+        // 각 대상에는 고유 경로가 있으므로 이 문자열 경로를 일종의 ID로 사용하여 비교해 보고 고유한 일치 항목을 찾을 수 있다.
+        // currentScreen을 업데이트하려면 rallyTabRowScreens 목록을 순환하여 일치하는 경로를 찾은 다음 그 RallyDestination을 반환해야 한다.
+
         Scaffold(
             topBar = {
                 RallyTabRow(
