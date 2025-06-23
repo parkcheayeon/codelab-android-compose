@@ -86,7 +86,14 @@ fun RallyApp() {
                 // Overview를 composable 확장 함수를 통해 추가하고 고유 문자열 route를 설정
                 // 탐색 그래프에 대상이 추가되므로 이 대상으로 이동하면 표시될 UI도 정의해야함
                 composable(route = Overview.route) {
-                    OverviewScreen()
+                    OverviewScreen(
+                        onClickSeeAllAccounts = {
+                            navController.navigateSingleTopTo(Accounts.route)
+                        },
+                        onClickSeeAllBills = {
+                            navController.navigateSingleTopTo(Bills.route)
+                        }
+                    )
                 }
                 composable(route = Accounts.route) {
                     AccountsScreen()
