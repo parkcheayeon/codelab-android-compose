@@ -93,11 +93,18 @@ fun RallyApp() {
                         },
                         onClickSeeAllBills = {
                             navController.navigateSingleTopTo(Bills.route)
+                        },
+                        onAccountClick = { accountType ->
+                            navController.navigateToSingleAccount(accountType)
                         }
                     )
                 }
                 composable(route = Accounts.route) {
-                    AccountsScreen()
+                    AccountsScreen(
+                        onAccountClick = { accountType ->
+                            navController.navigateToSingleAccount(accountType)
+                        }
+                    )
                 }
                 composable(route = Bills.route) {
                     BillsScreen()
@@ -132,4 +139,8 @@ fun NavHostController.navigateSingleTopTo(route: String) = this.navigate(route) 
     // 새로운 인스턴스를 생성하지 않고 기존 것을 재활용한다.
     restoreState = true
     // 이전에 PopUpToBuilder.saveState 또는 popUpToSaveState 속성에 의한 저장된 상태 복원 여부 결정
+}
+
+private fun NavHostController.navigateToSingleAccount(accountType: String) {
+    this.navigateSingleTopTo("${SingleAccount.route}/$accountType")
 }
