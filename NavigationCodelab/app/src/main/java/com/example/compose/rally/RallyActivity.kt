@@ -31,6 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.rally.ui.accounts.AccountsScreen
+import com.example.compose.rally.ui.accounts.SingleAccountScreen
 import com.example.compose.rally.ui.bills.BillsScreen
 import com.example.compose.rally.ui.components.RallyTabRow
 import com.example.compose.rally.ui.overview.OverviewScreen
@@ -100,6 +101,21 @@ fun RallyApp() {
                 }
                 composable(route = Bills.route) {
                     BillsScreen()
+                }
+                composable(
+                    route = "${SingleAccount.route}/{${SingleAccount.accountTypeArg}}",
+                    // 탐색 시에 인수를 경로와 함께 전달하려면 "route/{argument}" 패턴에 따라 경로에 인수를 추가해야 한다
+
+                    //arguments = listOf(
+                    //    navArgument(SingleAccount.accountTypeArg) { type = NavType.StringType }
+                    //)
+                    // 이 composable이 인수를 받아야 한다는 사실을 알려줘야 한다. 그렇게 하려면 arguments 매개변수를 정의한다.
+                    // composable 함수는 기본적으로 인수 목록을 받기 때문에 인수는 원하는 개수만큼 정의할 수 있다.
+                    // 여기서는 accountTypeArg라는 단일 인수를 추가하고 안전하게 String 유형으로 지정하면 된다.
+                    // 유형을 명시적으로 설정하지 않으면 인수의 기본값에서 유형이 추론된다.
+                    arguments = SingleAccount.arguments
+                ) {
+                    SingleAccountScreen()
                 }
             }
         }
