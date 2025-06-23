@@ -30,7 +30,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.compose.rally.ui.accounts.AccountsScreen
+import com.example.compose.rally.ui.bills.BillsScreen
 import com.example.compose.rally.ui.components.RallyTabRow
+import com.example.compose.rally.ui.overview.OverviewScreen
 import com.example.compose.rally.ui.theme.RallyTheme
 
 /**
@@ -83,13 +86,13 @@ fun RallyApp() {
                 // Overview를 composable 확장 함수를 통해 추가하고 고유 문자열 route를 설정
                 // 탐색 그래프에 대상이 추가되므로 이 대상으로 이동하면 표시될 UI도 정의해야함
                 composable(route = Overview.route) {
-                    Overview.screen()
+                    OverviewScreen()
                 }
                 composable(route = Accounts.route) {
-                    Accounts.screen()
+                    AccountsScreen()
                 }
                 composable(route = Bills.route) {
-                    Bills.screen()
+                    BillsScreen()
                 }
             }
         }
