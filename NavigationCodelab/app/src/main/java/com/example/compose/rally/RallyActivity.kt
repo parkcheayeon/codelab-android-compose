@@ -112,8 +112,11 @@ fun RallyApp() {
                 composable(
                     route = SingleAccount.routeWithArgs,
                     // 경로에 파라미터를 포함
-                    arguments = SingleAccount.arguments
+                    arguments = SingleAccount.arguments,
                     // composable은 arguments를 통해 인수를 처리하도록 함
+                    deepLinks = SingleAccount.deepLinks
+                    // deepLinks 매개변수 추가
+                    // intent-filter에 정의된 것과 일치하는 uriPattern을 전달한다. accountTypeArg 인수도 추가해야 한다.
                 ) { navBackStackEntry ->
                     val accountType = navBackStackEntry.arguments?.getString(SingleAccount.accountTypeArg)
                     SingleAccountScreen(accountType)
