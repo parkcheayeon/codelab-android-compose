@@ -4,6 +4,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import org.junit.Before
@@ -31,6 +32,17 @@ class NavigationTest {
     fun rallyNavHost_verifyOverviewStartDestination() {
         composeTestRule
             .onNodeWithContentDescription("Overview Screen")
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun rallyNavHost_clickAllAccount_navigatesToAccounts() {
+        composeTestRule
+            .onNodeWithContentDescription("All Accounts")
+            .performClick()
+
+        composeTestRule
+            .onNodeWithContentDescription("Accounts Screen")
             .assertIsDisplayed()
     }
 }
