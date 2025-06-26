@@ -21,12 +21,10 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.MoneyOff
 import androidx.compose.material.icons.filled.PieChart
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.compose.rally.ui.accounts.AccountsScreen
-import com.example.compose.rally.ui.accounts.SingleAccountScreen
-import com.example.compose.rally.ui.bills.BillsScreen
-import com.example.compose.rally.ui.overview.OverviewScreen
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 
 /**
  * Contract for information needed on every Rally navigation destination
@@ -34,7 +32,6 @@ import com.example.compose.rally.ui.overview.OverviewScreen
 interface RallyDestination {
     val icon: ImageVector
     val route: String
-    val screen: @Composable () -> Unit
 }
 
 /**
@@ -43,19 +40,16 @@ interface RallyDestination {
 object Overview : RallyDestination {
     override val icon = Icons.Filled.PieChart
     override val route = "overview"
-    override val screen: @Composable () -> Unit = { OverviewScreen() }
 }
 
 object Accounts : RallyDestination {
     override val icon = Icons.Filled.AttachMoney
     override val route = "accounts"
-    override val screen: @Composable () -> Unit = { AccountsScreen() }
 }
 
 object Bills : RallyDestination {
     override val icon = Icons.Filled.MoneyOff
     override val route = "bills"
-    override val screen: @Composable () -> Unit = { BillsScreen() }
 }
 
 object SingleAccount : RallyDestination {
@@ -63,8 +57,18 @@ object SingleAccount : RallyDestination {
     // part of the RallyTabRow selection
     override val icon = Icons.Filled.Money
     override val route = "single_account"
-    override val screen: @Composable () -> Unit = { SingleAccountScreen() }
     const val accountTypeArg = "account_type"
+    val routeWithArgs = "${route}/{${accountTypeArg}}"
+    val arguments = listOf(
+        navArgument(accountTypeArg) { type = NavType.StringType }
+        // 유형을 명시적으로 설정하지 않으면 인수의 기본값에서 유형이 추론된다.
+    )
+    val deepLinks = listOf(
+        navDeepLink { uriPattern = "rally://$route/{$accountTypeArg}" }
+        // 딥 링크가 트리거되면 대상을 실행할 수 있도록 새로 만든 딥 링크를 받아야 한다
+        // 매니페스트 rally://singleaccount의 intent-filter에 정의된 것과 일치하는 uriPattern을 전달한다.
+        // 이번에는 accountTypeArg 인수도 추가해야 한다.
+    )
 }
 
 // Screens to be displayed in the top RallyTabRow

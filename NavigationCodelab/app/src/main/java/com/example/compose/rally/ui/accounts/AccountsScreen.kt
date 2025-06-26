@@ -63,6 +63,7 @@ fun AccountsScreen(
 @Composable
 fun SingleAccountScreen(
     accountType: String? = UserData.accounts.first().name
+    // accountTypeArg가 SingleAccountScreen 컴포저블로 전달되어 어느 계좌 유형을 표시해야 할지 알 수 있도록 해야 한다.
 ) {
     val account = remember(accountType) { UserData.getAccount(accountType) }
     StatementBody(
