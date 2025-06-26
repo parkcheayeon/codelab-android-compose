@@ -61,9 +61,13 @@ object SingleAccount : RallyDestination {
     val routeWithArgs = "${route}/{${accountTypeArg}}"
     val arguments = listOf(
         navArgument(accountTypeArg) { type = NavType.StringType }
+        // 유형을 명시적으로 설정하지 않으면 인수의 기본값에서 유형이 추론된다.
     )
     val deepLinks = listOf(
         navDeepLink { uriPattern = "rally://$route/{$accountTypeArg}" }
+        // 딥 링크가 트리거되면 대상을 실행할 수 있도록 새로 만든 딥 링크를 받아야 한다
+        // 매니페스트 rally://singleaccount의 intent-filter에 정의된 것과 일치하는 uriPattern을 전달한다.
+        // 이번에는 accountTypeArg 인수도 추가해야 한다.
     )
 }
 
